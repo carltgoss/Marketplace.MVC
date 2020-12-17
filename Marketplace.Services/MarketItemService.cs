@@ -36,6 +36,23 @@ namespace Marketplace.Services
             }
         }
 
+        public MarketItemDetail GetMarketItemDetailById(int id)
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                var marketItem = ctx.MarketItems.Single(m => m.MarketId == id);
+                return new MarketItemDetail
+                {
+                    MarketId = marketItem.MarketId,
+                    Name = marketItem.Name,
+                    Category = marketItem.Category,
+                    Price = marketItem.Price,
+                    Description = marketItem.Description,
+                    InventoryCount = marketItem.InventoryCount
+                };
+            }
+        }
+
         public IEnumerable<MarketListItem> GetMarketItems()
         {
             using (var ctx = new ApplicationDbContext())
@@ -47,6 +64,21 @@ namespace Marketplace.Services
                 });
 
                 return query.ToArray();
+            }
+        }
+
+        public bool UpdateMarketItem(MarketItemEdit model)
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                var marketItem = ctx.MarketItems.Single(m => m.MarketId == model.MarketId);
+                marketItem.Name = marketItem.Name;
+                marketItem.Category = marketItem.Category;
+                marketItem.Price = marketItem.Price;
+                marketItem.Description = marketItem.Description;
+                marketItem.InventoryCount = marketItem.InventoryCount;
+
+                return ctx.SaveChanges() == 1;
             }
         }
     }

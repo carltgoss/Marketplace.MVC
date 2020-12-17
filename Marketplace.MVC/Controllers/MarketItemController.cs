@@ -39,6 +39,48 @@ namespace Marketplace.MVC.Controllers
             return View(model);
         }
 
+        public ActionResult Details(int id)
+        {
+            var marketItem = CreateMarketItemService().GetMarketItemDetailById(id);
+            return View(marketItem);
+        }
+
+        public ActionResult Edit(int id)
+        {
+            var marketItem = CreateMarketItemService().GetMarketItemDetailById(id);
+            return View(new MarketItemEdit
+            {
+                MarketId = marketItem.MarketId,
+                Name = marketItem.Name,
+                Category = marketItem.Category,
+                Price = marketItem.Price,
+                Description = marketItem.Description,
+                InventoryCount = marketItem.InventoryCount
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id, MarketItemEdit model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            if (model.MarketId != id)
+            {
+                ModelState.AddModelError("", "Id mismatch");
+                return View(model);
+            }
+
+            if (CreateMarketItemService().UpdateMarketItem(model))
+            {
+                TempData["Save Result"] = "Market Item Updated";
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "Error in creating market item");
+            return View(model);
+        }
+
         private MarketItemService CreateMarketItemService()
         {
             var userId = Guid.Parse(User.Identity.GetUserId());

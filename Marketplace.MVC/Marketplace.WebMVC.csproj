@@ -237,6 +237,8 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\MarketItem\Index.cshtml" />
     <Content Include="Views\MarketItem\Create.cshtml" />
+    <Content Include="Views\MarketItem\Details.cshtml" />
+    <Content Include="Views\MarketItem\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

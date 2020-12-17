@@ -43,6 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MarketItemCreate.cs" />
+    <Compile Include="MarketItemDetail.cs" />
+    <Compile Include="MarketItemEdit.cs" />
     <Compile Include="MarketListItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
