@@ -1,17 +1,15 @@
-﻿using System;
+﻿using Marketplace.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Marketplace.Data
+namespace Marketplace.Models
 {
-    public class MarketItem
+    public class MarketItemCreate
     {
-        [Key]
-        public int MarketId { get; set; }
-        [Required]
         public string Name { get; set; }
         [Required]
         public Category Category { get; set; }
@@ -22,12 +20,5 @@ namespace Marketplace.Data
         public string Description { get; set; }
         [Required]
         public int InventoryCount { get; set; }
-    }
-
-    public enum Category
-    {
-        Weapon = 1,
-        Item,
-        Battalion
     }
 }
