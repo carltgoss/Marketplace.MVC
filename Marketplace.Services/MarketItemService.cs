@@ -59,6 +59,7 @@ namespace Marketplace.Services
             {
                 var query = ctx.MarketItems.Select(m => new MarketListItem
                 {
+                    MarketId = m.MarketId,
                     Name = m.Name,
                     Price = m.Price
                 });

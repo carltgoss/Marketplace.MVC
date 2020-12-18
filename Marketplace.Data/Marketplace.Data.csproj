@@ -56,11 +56,28 @@
   <ItemGroup>
     <Compile Include="IdentityModels.cs" />
     <Compile Include="MarketItem.cs" />
+    <Compile Include="Migrations\202012171640445_InitialCreate.cs" />
+    <Compile Include="Migrations\202012171640445_InitialCreate.Designer.cs">
+      <DependentUpon>202012171640445_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012181435430_first-migration.cs" />
+    <Compile Include="Migrations\202012181435430_first-migration.Designer.cs">
+      <DependentUpon>202012181435430_first-migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202012171640445_InitialCreate.resx">
+      <DependentUpon>202012171640445_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012181435430_first-migration.resx">
+      <DependentUpon>202012181435430_first-migration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
