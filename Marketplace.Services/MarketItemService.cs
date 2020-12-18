@@ -61,6 +61,7 @@ namespace Marketplace.Services
                 {
                     MarketId = m.MarketId,
                     Name = m.Name,
+                    Category = m.Category,
                     Price = m.Price
                 });
 
@@ -73,11 +74,11 @@ namespace Marketplace.Services
             using (var ctx = new ApplicationDbContext())
             {
                 var marketItem = ctx.MarketItems.Single(m => m.MarketId == model.MarketId);
-                marketItem.Name = marketItem.Name;
-                marketItem.Category = marketItem.Category;
-                marketItem.Price = marketItem.Price;
-                marketItem.Description = marketItem.Description;
-                marketItem.InventoryCount = marketItem.InventoryCount;
+                marketItem.Name = model.Name;
+                marketItem.Category = model.Category;
+                marketItem.Price = model.Price;
+                marketItem.Description = model.Description;
+                marketItem.InventoryCount = model.InventoryCount;
 
                 return ctx.SaveChanges() == 1;
             }

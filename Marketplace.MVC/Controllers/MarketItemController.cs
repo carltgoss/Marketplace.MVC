@@ -73,7 +73,7 @@ namespace Marketplace.MVC.Controllers
 
             if (CreateMarketItemService().UpdateMarketItem(model))
             {
-                TempData["Save Result"] = "Market Item Updated";
+                TempData["SaveResult"] = "Market Item Updated";
                 return RedirectToAction("Index");
             }
 
