@@ -10,6 +10,9 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Marketplace.MVC.Models;
 using Marketplace.MVC.Data;
+using Marketplace.Services;
+using Marketplace.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Marketplace.MVC.Controllers
 {
@@ -23,7 +26,7 @@ namespace Marketplace.MVC.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -35,9 +38,9 @@ namespace Marketplace.MVC.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -51,6 +54,112 @@ namespace Marketplace.MVC.Controllers
             {
                 _userManager = value;
             }
+        }
+
+        public ActionResult Index()
+        {
+            var userService = new UserService();
+            var users = userService.GetAllUsers();
+
+            //using (var ctx = new ApplicationDbContext())
+            //{
+            //    ctx.Roles.Add(new IdentityRole()
+            //    {
+            //        Name = "admin"
+            //    });
+            //    ctx.SaveChanges();
+            //}
+
+            var userList = users.Select(u =>
+            {
+                /*do some stuff*/
+
+                return new UserListItem()
+                {
+                    UserId = u.Id,
+                    UserName = u.UserName,
+                    Email = u.Email,
+                };
+            }).ToList();
+            return View(userList);
+        }
+
+        public ActionResult Details(string userId)
+        {
+            ApplicationUser User = UserManager.FindById(userId);
+            var userDetailModel = new UserDetail()
+            {
+                UserName = User.UserName,
+                Email = User.Email,
+                UserId = User.Id
+            };
+            return View(userDetailModel);
+        }
+
+        public ActionResult Edit(string userId)
+        {
+            ApplicationUser User = UserManager.FindById(userId);
+            var UserRoles = UserManager.GetRoles(userId);
+            var userEditModel = new UserEdit()
+            {
+                UserName = User.UserName,
+                Email = User.Email,
+                UserId = User.Id,
+                IsAdmin = UserRoles.Any(r => r == "admin")
+            };
+            return View(userEditModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public ActionResult Edit(string userId, UserEdit model)
+        {
+            var currentUserId = User.Identity.GetUserId();
+            var currentRoles = UserManager.GetRoles(currentUserId);
+
+            var UserRoles = UserManager.GetRoles(userId);
+            bool UserIsAdmin = UserRoles.Any(r => r == "admin");
+
+            if (!currentRoles.Contains("admin"))
+            {
+                ModelState.AddModelError("", "You do not have permission to do this.");
+                return View(model);
+            }
+
+            if (!ModelState.IsValid) return View(model);
+
+            if (model.UserId != userId)
+            {
+                ModelState.AddModelError("", "Id Mismatch");
+                return View(model);
+            }
+
+            ApplicationUser user = UserManager.FindById(userId);
+            user.UserName = model.UserName;
+
+            if (model.IsAdmin)
+            {
+                UserManager.AddToRole(userId, "admin");
+            }
+
+            if (UserIsAdmin && !model.IsAdmin)
+            {
+                if (userId == currentUserId)
+                {
+                    ModelState.AddModelError("", "You cannot de-op yourself");
+                    return View(model);
+                }
+                UserManager.RemoveFromRole(userId, "admin");
+            }
+
+            if (UserManager.Update(user).Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "User could not be updated.");
+            return View(model);
         }
 
         //
@@ -121,7 +230,7 @@ namespace Marketplace.MVC.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -156,8 +265,8 @@ namespace Marketplace.MVC.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);

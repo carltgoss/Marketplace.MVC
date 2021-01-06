@@ -239,6 +239,9 @@
     <Content Include="Views\MarketItem\Create.cshtml" />
     <Content Include="Views\MarketItem\Details.cshtml" />
     <Content Include="Views\MarketItem\Edit.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Account\Details.cshtml" />
+    <Content Include="Views\Account\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

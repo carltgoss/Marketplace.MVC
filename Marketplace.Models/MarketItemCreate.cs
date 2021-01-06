@@ -10,6 +10,7 @@ namespace Marketplace.Models
 {
     public class MarketItemCreate
     {
+        [Required]
         public string Name { get; set; }
         [Required]
         public Category Category { get; set; }
